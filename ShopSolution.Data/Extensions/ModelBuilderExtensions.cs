@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ShopSolution.Data.Entities;
 using ShopSolution.Data.Enums;
 using System;
@@ -43,10 +44,10 @@ namespace ShopSolution.Data.Extensions
                 );
             modelBuilder.Entity<CategoryTranslation>().HasData(
 
-                    new CategoryTranslation() {Id=1, CategoryId = 1, Name = "Áo nam", LanguageId = "vi-VN", SeoAlias = "ao-nam", SeoDescription = "Sản phẩm áo thời trang nam", SeoTitle = "Sản phẩm áo thời trang nam" },
-                    new CategoryTranslation() {Id=2, CategoryId = 1, Name = "Men shirt", LanguageId = "en-US", SeoAlias = "men-shirt", SeoDescription = "The shirt products for men", SeoTitle = "The shirt products for men" },
-                    new CategoryTranslation() {Id=3, CategoryId = 2, Name = "Áo nữ", LanguageId = "vi-VN", SeoAlias = "ao-nu", SeoDescription = "Sản phẩm áo thời trang nữ", SeoTitle = "Sản phẩm áo thời trang nữ" },
-                    new CategoryTranslation() {Id=4, CategoryId = 2, Name = "Women shirt", LanguageId = "en-US", SeoAlias = "women-shirt", SeoDescription = "The shirt products for women", SeoTitle = "The shirt products for women" }
+                    new CategoryTranslation() { Id = 1, CategoryId = 1, Name = "Áo nam", LanguageId = "vi-VN", SeoAlias = "ao-nam", SeoDescription = "Sản phẩm áo thời trang nam", SeoTitle = "Sản phẩm áo thời trang nam" },
+                    new CategoryTranslation() { Id = 2, CategoryId = 1, Name = "Men shirt", LanguageId = "en-US", SeoAlias = "men-shirt", SeoDescription = "The shirt products for men", SeoTitle = "The shirt products for men" },
+                    new CategoryTranslation() { Id = 3, CategoryId = 2, Name = "Áo nữ", LanguageId = "vi-VN", SeoAlias = "ao-nu", SeoDescription = "Sản phẩm áo thời trang nữ", SeoTitle = "Sản phẩm áo thời trang nữ" },
+                    new CategoryTranslation() { Id = 4, CategoryId = 2, Name = "Women shirt", LanguageId = "en-US", SeoAlias = "women-shirt", SeoDescription = "The shirt products for women", SeoTitle = "The shirt products for women" }
 
                 );
             modelBuilder.Entity<Product>().HasData(
@@ -59,13 +60,13 @@ namespace ShopSolution.Data.Extensions
                     Stock = 0,
                     ViewCount = 0,
 
-                   
+
                 }
                 );
             modelBuilder.Entity<ProductTranslation>().HasData(
                 new ProductTranslation()
                 {
-                    Id=1,
+                    Id = 1,
                     ProductId = 1,
                     Name = "Áo nam",
                     LanguageId = "vi-VN",
@@ -77,7 +78,7 @@ namespace ShopSolution.Data.Extensions
                 },
                 new ProductTranslation()
                 {
-                    Id=2,
+                    Id = 2,
                     ProductId = 1,
                     Name = "Men shirt",
                     LanguageId = "en-US",
@@ -91,11 +92,42 @@ namespace ShopSolution.Data.Extensions
             modelBuilder.Entity<ProductInCategory>().HasData(
                 new ProductInCategory()
                 {
-                    ProductId=1,
+                    ProductId = 1,
                     CategoryId = 1
                 }
                 );
+            // any guid
+            var roleId = new Guid("CCCF417D-88AF-4FAE-9434-ED2464311AA4");
+            var adminId = new Guid("7D9B1FA1-56E8-4D15-817A-B1F540C77BC5");
 
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = roleId,
+                Name = "admin",
+                NormalizedName = "admin",
+                Description = "Administrator role"
+            });
+            var hasher = new PasswordHasher<AppUser>();
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = adminId,
+                UserName = "admin",
+                NormalizedUserName = "admin",
+                Email = "hangtruong11398@gmail.com",
+                NormalizedEmail = "hangtruong11398@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "@Abcd12345"),
+                SecurityStamp = string.Empty,
+                FirstName = "Hang",
+                LastName = "Truong",
+                Dob = new DateTime(1998, 03, 11)
+
+            }) ;
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = roleId,
+                UserId = adminId
+            });
         }
     }
 }
