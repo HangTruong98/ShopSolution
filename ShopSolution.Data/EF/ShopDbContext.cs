@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShopSolution.Data.Configuration;
 using ShopSolution.Data.Entities;
 using ShopSolution.Data.Extensions;
@@ -8,7 +11,7 @@ using System.Text;
 
 namespace ShopSolution.Data.EF
 {
-    public class ShopDbContext : DbContext
+    public class ShopDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public ShopDbContext( DbContextOptions options) : base(options)
         {
@@ -31,7 +34,14 @@ namespace ShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
 
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x=>new { x.UserId, x.RoleId });
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x=>x.UserId);
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
+            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x=>x.UserId);
 
             //Data seeding
             modelBuilder.Seed();
@@ -49,7 +59,7 @@ namespace ShopSolution.Data.EF
         public DbSet<ProductTranslation> ProductTranslations { set; get; }
         public DbSet<CategoryTranslation> CategoryTranslations { set; get; }
         public DbSet<Promotion> Promotions { set; get; }
-        public DbSet<SystemActivity> SystemActivities { set; get; }
+        
         public DbSet<Contact> Contacts { set; get; }
         public DbSet<Language> Languages { set; get; }
         public DbSet<AppConfig> AppConfigs { set; get; }

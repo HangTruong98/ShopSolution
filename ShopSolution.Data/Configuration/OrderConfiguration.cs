@@ -23,6 +23,7 @@ namespace ShopSolution.Data.Configuration
 
 
             builder.Property(x => x.ShipPhoneNumber).IsRequired().HasMaxLength(20);
+            builder.HasOne(x => x.AppUser).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
         }
     }
 }
